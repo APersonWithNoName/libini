@@ -1,3 +1,23 @@
+# Linux
+*.o
 *.out
+*.a
+*.so
 
+# Windows
+*.obj
+*.pdb
+*.exe
+*.lib
+*.dll
+
+# MacOS
+*.dylib
+*.tdb
+
+# All
+build/
+
+# IDE config
+.idea/
 .vscode/
