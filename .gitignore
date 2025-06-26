@@ -21,3 +21,7 @@ build/
 # IDE config
 .idea/
 .vscode/
+compile_commands.json
+
+# Clangd cache
+.cache/
