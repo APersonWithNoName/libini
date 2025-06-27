@@ -1,35 +1,34 @@
 # cmake version
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+cmake_minimum_required(VERSION 3.10)
 # project name
-PROJECT(libini)
+project(ini)
 
 # set c++ version
-SET(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
 
 # set source file
-INCLUDE_DIRECTORIES(include)
-AUX_SOURCE_DIRECTORY(src LIBINI_SRC)
+include_directories(include)
+aux_source_directory(src LIBINI_SRC)
 
 # set compile_command.json
-SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# build static lib
-ADD_LIBRARY(ini_static STATIC ${LIBINI_SRC})
-# rename static lib
-SET_TARGET_PROPERTIES(ini_static PROPERTIES  OUTPUT_name "ini")
-# do not clean output
-SET_TARGET_PROPERTIES(ini_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 # build shared lib
-ADD_LIBRARY(ini SHARED ${LIBINI_SRC})
+add_library(${PROJECT_NAME} SHARED ${LIBINI_SRC})
 
-# set header files which is required to install
-SET(HEADER_FILES
-	${LIBINI_INC}/libini.hpp
-)
+# set original name of static lib
+set(ORIGINAL_STATIC_LIB_NAME ${PROJECT_NAME}-static)
+# build static lib
+add_library(${ORIGINAL_STATIC_LIB_NAME} STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
+# rename static lib
+set_target_properties(${ORIGINAL_STATIC_LIB_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+
 # install header files
-INSTALL(FILES include/libini/libini.hpp DESTINATION include/libini)
+install(FILES include/libini/libini.hpp
+	          include/libini/Error.hpp
+	    DESTINATION include/libini)
 # install lib
-INSTALL(TARGETS ini ini_static 
+install(TARGETS ${PROJECT_NAME} ${ORIGINAL_STATIC_LIB_NAME}
 		LIBRARY DESTINATION lib 
 		ARCHIVE DESTINATION lib
 )
