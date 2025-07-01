@@ -1,4 +1,6 @@
 #include "libini/libini.hpp"
+#include <cstddef>
+#include <cstdio>
 
 libini::_Section::_Section(const std::string &sec_name)
 {
@@ -97,6 +99,22 @@ void libini::_Section::clear(void)
     this->_data.clear();
 }
 
+std::string libini::_Section::to_string(const std::string& node_format, const std::string& title_format)
+{
+    char *result;
+
+    if (this->_name != "")
+        std::snprintf(result, sizeof(result), title_format.c_str(), this->_name.c_str());
+    else
+        result = {};
+    for (std::map<std::string, libini::_Node>::iterator i = this->_data.begin(); i != this->_data.end(); i++) {
+        std::snprintf(result, sizeof(result), (node_format + '\n').c_str(), i->first.c_str(), i->second._value.c_str());
+    }
+
+    return std::string(result, sizeof(result));
+}
+
+/*
 std::string libini::_Section::to_string(void)
 {
     std::string result;
@@ -111,3 +129,4 @@ std::string libini::_Section::to_string(void)
         result += i->first + "=" + i->second._value + "\n";
     return result;
 }
+    */

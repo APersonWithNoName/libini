@@ -33,4 +33,4 @@ install(TARGETS ${PROJECT_NAME} ${ORIGINAL_STATIC_LIB_NAME}
 		ARCHIVE DESTINATION lib
 )
 
-
+# build test

@@ -4,12 +4,16 @@
 #include "libini/Error.hpp"
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <sstream>
 #include <map>
 #include <vector>
-#include <fstream>
 #include <cstddef>
+#include <cstring>
+#include <cstdio>
+
+#define INI_FORMAT_STYLE ["[", "]", "  ", " ", " ", ";"]
 
 /*
  * 库声明从此开始
@@ -32,8 +36,8 @@ namespace libini
         _Section(const std::string& sec_name);
         bool is_node_exist(const std::string& nod_key);
         INI_ERR add_node(const std::string& nod_key, const std::string& nod_value);
-        void append_section(_Section& sec);
         void set_node(const std::string& nod_key, const std::string& nod_value);
+        void append_section(_Section& sec);
         void rename(const std::string& new_name);
         INI_ERR remame_node(const std::string& old_key_name, const std::string& new_key_name);
         std::string get_name(void);
@@ -41,7 +45,7 @@ namespace libini
         std::vector<std::string> get_all_keys(void);
         INI_ERR remove(const std::string& nod_key);
         void clear(void);
-        std::string to_string(void);
+        std::string to_string(const std::string& node_format = "%s = %s", const std::string& title_format = "[%s]");
     };
 
     class _IniMgr
@@ -53,12 +57,12 @@ namespace libini
     public:
         std::string _file_name;
         std::map<std::string, _Section> _data;
-        _IniMgr() = default;
+        _IniMgr(void) = default;
         _IniMgr(const std::string file_name);
-        ~_IniMgr();
+        ~_IniMgr(void);
         _IniMgr &operator=(const _IniMgr &ini_mgr);
-        Error parse_file();
-        Error to_string();
+        Error parse_file(void);
+        Error to_string(void);
     };
 
     class ini
@@ -69,10 +73,12 @@ namespace libini
         _IniMgr _ini_mgr;
     public:
         ini(const std::string& file_name);
+        INI_ERR load_file(const std::string& file_name);
         bool is_section_exist(const std::string& sec_name);
-        void addSection(_Section &sec);
-        void add(const std::string& sec_name, const std::string& nod_key, const std::string& nod_value);
-        void add(const std::string& nod_key, const std::string& nod_value);
+        void add_section(_Section& sec);
+        INI_ERR add_section(const std::string& sec_name);
+        INI_ERR add(const std::string& sec_name, const std::string& nod_key, const std::string& nod_value);
+        INI_ERR add(const std::string& nod_key, const std::string& nod_value);
         void set(const std::string& sec_name, const std::string& nod_key, const std::string& nod_value);
         void set(const std::string& nod_key, const std::string& nod_value);
         void append(ini& iniIn);
@@ -85,9 +91,8 @@ namespace libini
         INI_ERR remove_node(const std::string& nod_key);
         INI_ERR remove_sec(const std::string& sec_name);
         void clear(void);
-        std::string to_string(void);
-        INI_ERR write(const std::string& file_name = "");
-        INI_ERR format(const std::string file_name = "");
+        std::string to_string(const std::string& file_name = "", const std::string& file_format = "%s\n", const std::string& node_format = "%s = %s", const std::string& title_format = "[%s]");
+        INI_ERR write(const std::string& file_name = "", const std::string& file_format = "%s\n", const std::string& node_format = "%s = %s", const std::string& title_format = "[%s]");
     };
 
 };

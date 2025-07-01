@@ -1,3 +1,6 @@
+#ifndef __LIBINI__ERROR_H__
+#define __LIBINI__ERROR_H__
+
 #include <iostream>
 #include <string>
 
@@ -24,8 +27,11 @@ namespace libini{
         int _linenum;
     public:
         Error(const INI_ERR ErrCode, const int LineNum);
+        INI_ERR get_errcode();
         std::string getErrorInfo(const INI_ERR ErrCode);
         INI_ERR throwError();
 };
 
 }
+
+#endif /*__LIBINI_ERROR_H__*/

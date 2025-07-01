@@ -6,6 +6,11 @@ libini::Error::Error(const INI_ERR ErrCode, const int LineNum)
     this->_linenum = LineNum;
 }
 
+INI_ERR libini::Error::get_errcode()
+{
+    return this->_errcode;
+}
+
 std::string libini::Error::getErrorInfo(const INI_ERR errcode)
 {
     std::string errinfo = "";

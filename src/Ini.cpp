@@ -1,10 +1,23 @@
+#include "libini/Error.hpp"
 #include "libini/libini.hpp"
 
 libini::ini::ini(const std::string &file_name)
 {
     this->_file_name = file_name;
+    //this->_ini_mgr = _IniMgr(this->_file_name);
+    //this->_data = this->_ini_mgr._data;
+}
+
+INI_ERR libini::ini::load_file(const std::string &file_name)
+{
     this->_ini_mgr = _IniMgr(this->_file_name);
-    this->_data = this->_ini_mgr._data;
+    INI_ERR status = this->_ini_mgr.parse_file().get_errcode();
+
+    if (status == NO_ERRORS) {
+        this->_data = this->_ini_mgr._data;
+    }
+
+    return status;
 }
 
 bool libini::ini::is_section_exist(const std::string &sec_name)
@@ -20,24 +33,38 @@ bool libini::ini::is_section_exist(const std::string &sec_name)
     }
 }
 
-void libini::ini::addSection(_Section &sec)
+void libini::ini::add_section(_Section &sec)
 {
     this->_data.emplace(sec.get_name(), sec);
 }
 
-void libini::ini::add(const std::string &sec_name, const std::string &nod_key,
-                      const std::string &nod_value)
+INI_ERR libini::ini::add_section(const std::string &sec_name)
 {
-    if (!this->is_section_exist(sec_name)) {
-        _Section sec(sec_name);
-        this->addSection(sec);
-    }
-    this->_data.at(sec_name).add_node(nod_key, nod_value);
+    if (this->is_section_exist(sec_name))
+        return SECTION_EXIST;
+
+    this->_data.emplace(sec_name);
+ 
+    return NO_ERRORS;
 }
 
-void libini::ini::add(const std::string &nod_key, const std::string &nod_value)
+INI_ERR libini::ini::add(const std::string &sec_name, const std::string &nod_key, const std::string &nod_value)
 {
-    this->add("", nod_key, nod_value);
+    if (!this->is_section_exist(sec_name))
+        this->set(sec_name, nod_key, nod_value);
+    else {
+        if (!this->_data.at(sec_name).is_node_exist(nod_key))
+            this->set(sec_name, nod_key, nod_value);
+        else 
+            return NODE_EXIST;
+    }
+
+    return NO_ERRORS;
+}
+
+INI_ERR libini::ini::add(const std::string &nod_key, const std::string &nod_value)
+{
+    return this->add("", nod_key, nod_value);
 }
 
 void libini::ini::set(const std::string &sec_name, const std::string &nod_key, const std::string &nod_value)
@@ -45,7 +72,7 @@ void libini::ini::set(const std::string &sec_name, const std::string &nod_key, c
     if (!this->is_section_exist(sec_name))
     {
         _Section sec(sec_name);
-        this->addSection(sec);
+        this->add_section(sec);
     }
     this->_data.at(sec_name).set_node(nod_key, nod_value);
 }
@@ -67,7 +94,7 @@ void libini::ini::append_section(_Section &sec)
     if (this->is_section_exist(sec_name))
         this->_data.at(sec_name).append_section(sec);
     else
-        this->addSection(sec);
+        this->add_section(sec);
 }
 
 libini::_Section *libini::ini::getSection(const std::string &sec_name)
@@ -132,40 +159,34 @@ void libini::ini::clear(void)
     this->_data.clear();
 }
 
-std::string libini::ini::to_string(void)
+std::string libini::ini::to_string(const std::string& file_name, const std::string& file_format, const std::string& node_format, const std::string& title_format)
 {
-    std::string result;
+    char *result = {};
 
-    for (std::map<std::string, libini::_Section>::iterator i =
-             this->_data.begin();
-         i != this->_data.end(); i++)
-        result += i->second.to_string() + "\n";
+    for (std::map<std::string, libini::_Section>::iterator i = this->_data.begin(); i != this->_data.end(); i++) {
+        snprintf(result, sizeof(result), (file_format + '\n').c_str(), i->second.to_string(node_format, title_format).c_str());
+    }
 
-    return result;
+    return std::string(result, sizeof(result));
 }
 
-INI_ERR libini::ini::write(const std::string &file_name)
+INI_ERR libini::ini::write(const std::string& file_name, const std::string& file_format, const std::string& node_format, const std::string& title_format)
 {
-    std::string _file_name = this->_file_name;
-
-    if (file_name != "")
-        _file_name = file_name;
+    std::string __file_name;
+    if (file_name == "")
+        __file_name = this->_file_name;
+    else
+        __file_name = file_name;
 
     std::fstream out_file;
-    out_file.open(_file_name,
-                 std::ifstream::in | std::ifstream::out | std::fstream::app);
+    out_file.open(__file_name, std::fstream::in | std::fstream::out | std::fstream::app);
 
     if (!out_file.is_open())
         return CANNOT_OPEN_FILE;
 
-    out_file << this->to_string() << std::endl;
+    out_file << this->to_string(file_format, node_format, title_format);
     out_file.close();
     out_file.clear();
 
     return NO_ERRORS;
-}
-
-INI_ERR libini::ini::format(const std::string file_name)
-{
-    return this->write(file_name);
 }
