@@ -43,7 +43,7 @@ INI_ERR libini::ini::add_section(const std::string &sec_name)
     if (this->is_section_exist(sec_name))
         return SECTION_EXIST;
 
-    this->_data.emplace(sec_name);
+    this->_data.emplace(sec_name, _Section(sec_name));
  
     return NO_ERRORS;
 }
