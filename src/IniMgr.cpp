@@ -1,4 +1,5 @@
 #include "libini/libini.hpp"
+#include <string>
 
 
 libini::_IniMgr::_IniMgr(const std::string file_name)
@@ -25,11 +26,13 @@ libini::Error libini::_IniMgr::parse_file()
 
     while (std::getline(this->_inifile, line_data))
     {
-        if (!LineFilter(line_data))
+        if (!file_filter(line_data))
         {
             this->_linenum++;
             continue;
         }
+
+        line_data = this->line_filter(line_data);
 
         line_length = line_data.length();
 
@@ -59,16 +62,21 @@ libini::Error libini::_IniMgr::parse_file()
         }
         else
         {
-            std::string::size_type equal_pos = line_data.find('=');
+            std::string::size_type equal_pos;
 
-            /*
+            for (std::string::size_type i = 0; i < line_length; i++) {
+                char c = line_data.at(i);
+                if (c == '=') {
+                    if (line_data.at(i - 1) == '\\')
+                        continue;
+                    equal_pos = i;
+                }
+                else
+                    continue;
+            }
 
-            if (pos == std::string::npos)
+            if (equal_pos == std::string::npos)
                 return Error(MISS_EQUAL, this->_linenum);
-
-            key = line_data.substr(0, pos -1);
-            value = line_data.substr(pos + 1, tmp_str.length() -1);
-            */
 
             std::string::size_type key_first_pos, key_last_pos, value_first_pos, value_last_pos;
 
@@ -126,11 +134,27 @@ libini::Error libini::_IniMgr::parse_file()
     return Error(NO_ERRORS, 0);
 }
 
-bool libini::_IniMgr::LineFilter(const std::string &input)
+bool libini::_IniMgr::file_filter(const std::string &input)
 {
-    if (input.find(';') == 0 || input.find('#'))
+    if (input.find(';') == 0 || input.find('#') == 0)
         return false;
     return true;
+}
+
+std::string libini::_IniMgr::line_filter(const std::string &input)
+{
+    for (std::string::size_type i = 0; i < input.length(); i++) {
+        char c = input.at(i);
+        if (i == ';' || i == '#') {
+            if (input.at(i - 1) == '\\') 
+                continue;
+            return  input.substr(0, i + 1);
+        }
+        else
+            continue;
+    }
+
+    return input;
 }
 
 libini::_IniMgr& libini::_IniMgr::operator=(const _IniMgr &ini_mgr) {

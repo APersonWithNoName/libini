@@ -53,7 +53,8 @@ namespace libini
     private:
         std::fstream _inifile;
         size_t _linenum;
-        bool LineFilter(const std::string& input);
+        bool file_filter(const std::string& input);
+        std::string line_filter(const std::string& input);
     public:
         std::string _file_name;
         std::map<std::string, _Section> _data;
