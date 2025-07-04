@@ -159,7 +159,7 @@ void libini::ini::clear(void)
     this->_data.clear();
 }
 
-std::string libini::ini::to_string(const std::string& file_name, const std::string& file_format, const std::string& node_format, const std::string& title_format)
+std::string libini::ini::to_string(const std::string& file_format, const std::string& node_format, const std::string& title_format)
 {
     char *result = {};
 

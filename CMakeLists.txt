@@ -26,6 +26,7 @@ set_target_properties(${ORIGINAL_STATIC_LIB_NAME} PROPERTIES OUTPUT_NAME ${PROJE
 # install header files
 install(FILES include/libini/libini.hpp
 	          include/libini/Error.hpp
+              include/libini/libini_wrapper.h
 	    DESTINATION include/libini)
 # install lib
 install(TARGETS ${PROJECT_NAME} ${ORIGINAL_STATIC_LIB_NAME}

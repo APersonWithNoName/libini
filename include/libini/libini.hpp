@@ -12,8 +12,8 @@
 #include <cstddef>
 #include <cstring>
 #include <cstdio>
+#include <cstdlib>
 
-#define INI_FORMAT_STYLE ["[", "]", "  ", " ", " ", ";"]
 
 /*
  * 库声明从此开始
@@ -92,7 +92,7 @@ namespace libini
         INI_ERR remove_node(const std::string& nod_key);
         INI_ERR remove_sec(const std::string& sec_name);
         void clear(void);
-        std::string to_string(const std::string& file_name = "", const std::string& file_format = "%s\n", const std::string& node_format = "%s = %s", const std::string& title_format = "[%s]");
+        std::string to_string(const std::string& file_format = "%s\n", const std::string& node_format = "%s = %s", const std::string& title_format = "[%s]");
         INI_ERR write(const std::string& file_name = "", const std::string& file_format = "%s\n", const std::string& node_format = "%s = %s", const std::string& title_format = "[%s]");
     };
 
