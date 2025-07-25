@@ -84,10 +84,10 @@ namespace libini
         void set(const std::string& nod_key, const std::string& nod_value);
         void append(ini& iniIn);
         void append_section(_Section& sec);
-        _Section* getSection(const std::string& sec_name);
+        _Section* get_section(const std::string& sec_name);
         std::string get_value(const std::string& sec_name, const std::string& nod_key);
         std::string get_value(const std::string& nod_key);
-        std::vector<std::string> getAllSection(void);
+        std::vector<std::string> get_all_section(void);
         INI_ERR remove_node(const std::string& sec_name, const std::string& nod_key);
         INI_ERR remove_node(const std::string& nod_key);
         INI_ERR remove_sec(const std::string& sec_name);

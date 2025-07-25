@@ -97,7 +97,7 @@ void libini::ini::append_section(_Section &sec)
         this->add_section(sec);
 }
 
-libini::_Section *libini::ini::getSection(const std::string &sec_name)
+libini::_Section *libini::ini::get_section(const std::string &sec_name)
 {
     if (this->is_section_exist(sec_name))
         return &(this->_data.at(sec_name));
@@ -119,7 +119,7 @@ std::string libini::ini::get_value(const std::string &nod_key)
     return this->get_value("", nod_key);
 }
 
-std::vector<std::string> libini::ini::getAllSection(void)
+std::vector<std::string> libini::ini::get_all_section(void)
 {
     std::vector<std::string> result;
 

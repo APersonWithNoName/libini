@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+
 #define INI_ERR int
 
 #define NO_ERRORS 0

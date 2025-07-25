@@ -19,7 +19,7 @@ libini::Error libini::_IniMgr::parse_file()
     this->_linenum = 1;
     std::string line_data, sec_name, key, value;
     libini::_Section sec("");
-    int line_length;
+    size_t line_length;
 
     if (!this->_inifile.is_open())
         return Error(CANNOT_OPEN_FILE, 0);
@@ -62,7 +62,7 @@ libini::Error libini::_IniMgr::parse_file()
         }
         else
         {
-            std::string::size_type equal_pos;
+            std::string::size_type equal_pos = 0;
 
             for (std::string::size_type i = 0; i < line_length; i++) {
                 char c = line_data.at(i);
@@ -75,14 +75,21 @@ libini::Error libini::_IniMgr::parse_file()
                     continue;
             }
 
-            if (equal_pos == std::string::npos)
+            if (equal_pos == std::string::npos){
                 return Error(MISS_EQUAL, this->_linenum);
+            }
+                
 
-            std::string::size_type key_first_pos, key_last_pos, value_first_pos, value_last_pos;
+            std::string::size_type \
+            key_first_pos = 0, \
+            key_last_pos = 0, \
+            value_first_pos = 0, \
+            value_last_pos = 0;
 
             for (std::string::size_type i = equal_pos; i >= 0; i--) {
-                if (line_data[i] == ' ')
+                if (line_data[i] == ' ') {
                     continue;
+                }
                 else {
                     key_last_pos = i;
                     break;
@@ -144,7 +151,6 @@ bool libini::_IniMgr::file_filter(const std::string &input)
 std::string libini::_IniMgr::line_filter(const std::string &input)
 {
     for (std::string::size_type i = 0; i < input.length(); i++) {
-        char c = input.at(i);
         if (i == ';' || i == '#') {
             if (input.at(i - 1) == '\\') 
                 continue;

@@ -21,7 +21,7 @@
 namespace libini{
 
     class Error
-{
+    {
     private:
         INI_ERR _errcode;
         int _linenum;
@@ -30,7 +30,7 @@ namespace libini{
         INI_ERR get_errcode();
         std::string getErrorInfo(const INI_ERR ErrCode);
         INI_ERR throwError();
-};
+    };
 
 }
 
