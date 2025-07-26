@@ -32,7 +32,7 @@ struct INI *INI_create(const char *file_name)
 
 INI_ERR INI_load_file(struct INI *ini, const char *file_name)
 {
-    return ini->_ini.load_file(std::string(file_name));
+    return ini->_ini.load_file(std::string(file_name)).get_errcode();
 }
 
 bool INI_is_section_exist(struct INI *ini, const char *sec_name)

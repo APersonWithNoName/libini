@@ -27,9 +27,11 @@ namespace libini{
         int _linenum;
     public:
         Error(const INI_ERR ErrCode, const int LineNum);
+        Error();
         INI_ERR get_errcode();
         std::string getErrorInfo(const INI_ERR ErrCode);
         INI_ERR throwError();
+        std::string to_string(const std::string& _format = "ERROR CODE=%d LINE=%d\n");
     };
 
 }

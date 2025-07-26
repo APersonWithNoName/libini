@@ -74,7 +74,7 @@ namespace libini
         _IniMgr _ini_mgr;
     public:
         ini(const std::string& file_name);
-        INI_ERR load_file(const std::string& file_name);
+        libini::Error load_file(const std::string& file_name);
         bool is_section_exist(const std::string& sec_name);
         void add_section(_Section& sec);
         INI_ERR add_section(const std::string& sec_name);

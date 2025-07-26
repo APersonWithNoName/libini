@@ -8,16 +8,19 @@ libini::ini::ini(const std::string &file_name)
     //this->_data = this->_ini_mgr._data;
 }
 
-INI_ERR libini::ini::load_file(const std::string &file_name)
+libini::Error libini::ini::load_file(const std::string &file_name)
 {
-    this->_ini_mgr = _IniMgr(this->_file_name);
+    /*this->_ini_mgr = _IniMgr(this->_file_name);
     INI_ERR status = this->_ini_mgr.parse_file().get_errcode();
 
     if (status == NO_ERRORS) {
         this->_data = this->_ini_mgr._data;
     }
 
-    return status;
+    return status;-*/
+  libini::Error err = this->_ini_mgr.parse_file();
+  this->_data = this->_ini_mgr._data;
+  return err;
 }
 
 bool libini::ini::is_section_exist(const std::string &sec_name)

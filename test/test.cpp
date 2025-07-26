@@ -12,12 +12,10 @@ int main(int argc, char **argv)
     libini::ini ini_file((std::string)file_name);
 
     // 使用 load_file 加载文件
-    INI_ERR status = ini_file.load_file(file_name);
-    if (status != 0){
-        std::cout << "Error!" << " " << status << " " << std::endl;
-        return -1;
+    libini::Error status = ini_file.load_file(file_name);
+    if (status.get_errcode() != 0) {
+      std::cout << status.to_string() << std::endl;
     }
-        
     // 获取
     // 值
     std::cout << ini_file.get_value("Section1", "key1.1") << std::endl;
